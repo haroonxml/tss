@@ -12,6 +12,14 @@
 #    , [Object] $p_UploadEBSDir
 #)
 
+# Create local folders
+New-Item -ItemType directory -Path C:\Kits\FintechOS
+New-Item -ItemType directory -Path C:\Temp
+
+# Download and install SSMS
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest -Uri "http://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe" -OutFile "C:\temp\SSMS-Setup-ENU.exe"
+Start-Process -Filepath "C:\temp\SSMS-Setup-ENU.exe" -ArgumentList "/install /quiet /norestart" -wait
 
 
 
@@ -35,9 +43,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets -All
 Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
 
 
-# Create local folders
-New-Item -ItemType directory -Path C:\Kits\FintechOS
-New-Item -ItemType directory -Path C:\Temp
+
 
 
 # Download FintechOS files
@@ -47,7 +53,6 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsqlx86.msi" -OutFile "C:\temp\msodbcsqlx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtils.msi" -OutFile "C:\temp\MsSqlCmdLnUtils.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsql.msi" -OutFile "C:\temp\msodbcsql.msi"
-Invoke-WebRequest -Uri "http://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe" -OutFile "C:\temp\SSMS-Setup-ENU.exe"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.001" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.001"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.002" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.002"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.003" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.003"
@@ -68,10 +73,10 @@ C:\temp\7zip\7z.exe x C:\Kits\FintechOS\FTOS-CORE.7z.001 -o"C:\Kits"
 
 #Install SQLcmd
 
-Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\msodbcsql.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
-Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\MsSqlCmdLnUtilsx86.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
-Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\MsSqlCmdLnUtils.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
-Start-Process -Filepath "C:\temp\SSMS-Setup-ENU.exe" -ArgumentList "/install /quiet /norestart" -wait
+# Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\msodbcsql.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
+# Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\MsSqlCmdLnUtilsx86.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
+# Start-Process -Filepath "msiexec" -ArgumentList "/i `"C:\Temp\MsSqlCmdLnUtils.msi`" /passive IACCEPTMSSQLCMDLNUTILSLICENSETERMS=YES" -wait
+
 
 
 # Run FintechOS installer ( dbserver_name++suffix, databases_name, AdminUsername, AdminPassword)
