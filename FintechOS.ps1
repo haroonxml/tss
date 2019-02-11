@@ -56,10 +56,6 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.006" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.006"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.007" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.007"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.008" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.008"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.009" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.009"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.010" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.010"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.011" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.011"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.012" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.012"
 
 
 # Unzip 7zip to local drive
