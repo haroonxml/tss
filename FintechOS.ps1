@@ -64,7 +64,7 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 
 
 # Unzip 7zip to local drive
-Expand-Archive "C:\temp\7zip.zip" -DestinationPath “C:\Temp\”
+Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
 
 
 # Unzip FintechOS
