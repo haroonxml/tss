@@ -92,13 +92,12 @@ Start-Process -Filepath "C:\temp\7zip\7z.exe" -ArgumentList "x C:\Kits\FintechOS
 # Run FintechOS installer ( dbserver_name++suffix, databases_name, AdminUsername, AdminPassword)
 
 
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
 Start-Sleep -s 45
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
 Start-Sleep -s 45
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 600
-
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
+Start-Sleep -s 300
 
 # Install Designer 
 
@@ -107,3 +106,8 @@ Start-Sleep -s 600
 # Install Portal
 
 & C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir C:\Sites\FintechOS\Designer -p_IisWebSite "default web site" -p_IisApp FTOS_Designer -p_IisAppPool FTOS_Designer -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir C:\UploadEBS
+
+# Repaeat FintechOS script installer
+
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass"
+
