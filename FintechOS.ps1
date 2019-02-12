@@ -69,7 +69,8 @@ Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
 
 # Unzip FintechOS
 
-C:\temp\7zip\7z.exe x C:\Kits\FintechOS\FTOS-CORE.7z.001 -o"C:\Kits"
+Start-Process -Filepath "C:\temp\7zip\7z.exe" -ArgumentList "x C:\Kits\FintechOS\FTOS-CORE.7z.001 -o`"C:\Kits`"" -wait
+
 
 #Install SQLcmd
 
@@ -83,11 +84,9 @@ C:\temp\7zip\7z.exe x C:\Kits\FintechOS\FTOS-CORE.7z.001 -o"C:\Kits"
 
 
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 30
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 30
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 600
+
 
 # Install Designer 
 
