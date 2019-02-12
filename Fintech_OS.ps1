@@ -109,3 +109,17 @@ Start-Process -verb runAs -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" 
 
 & C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
 
+
+# Define job variables to run sqlcmd
+$jobname = "ResumeRestart"
+$script =  "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
+$trigger = New-JobTrigger -AtStartup
+ 
+# The script below will run elevated to use the highest privileges.
+$scriptblock = [scriptblock]::Create($script)
+$options = New-ScheduledJobOption -RunElevated -ContinueIfGoingOnBattery -StartIfOnBattery
+Register-ScheduledJob -Name $jobname -ScriptBlock $scriptblock -Trigger $trigger -ScheduledJobOption $options
+
+# Restart machine
+
+Restart-Computer -Force
