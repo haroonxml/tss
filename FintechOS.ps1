@@ -87,7 +87,7 @@ Start-Sleep -s 30
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
 Start-Sleep -s 30
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 300
+Start-Sleep -s 600
 
 # Install Designer 
 
