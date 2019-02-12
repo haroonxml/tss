@@ -22,7 +22,6 @@ Format-Volume -FileSystem NTFS -NewFileSystemLabel "data" -Confirm:$false
 # Create local folders
 New-Item -ItemType directory -Path C:\Kits\FintechOS
 New-Item -ItemType directory -Path C:\Temp
-New-Item -ItemType directory -Path C:\UploadEBS
 New-Item -ItemType directory -Path F:\UploadEBS
 
 # Download and install SSMS
@@ -101,13 +100,13 @@ Start-Sleep -s 300
 
 # Install Designer 
 
-& C:\Kits\FTOS-CORE\DesignerWebApp\DesignerWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir C:\Sites\FintechOS\Designer -p_IisWebSite "default web site" -p_IisApp FTOS_Designer -p_IisAppPool FTOS_Designer -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir C:\UploadEBS
+& C:\Kits\FTOS-CORE\DesignerWebApp\DesignerWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir F:\Sites\FintechOS\Designer -p_IisWebSite "default web site" -p_IisApp FTOS_Designer -p_IisAppPool FTOS_Designer -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir F:\UploadEBS
 
 # Install Portal
 
-& C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir C:\Sites\FintechOS\Portal -p_IisWebSite "default web site" -p_IisApp FTOS_Portal -p_IisAppPool FTOS_Portal -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir C:\UploadEBS
+& C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir F:\Sites\FintechOS\Portal -p_IisWebSite "default web site" -p_IisApp FTOS_Portal -p_IisAppPool FTOS_Portal -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir F:\UploadEBS
 
 # Repaeat FintechOS script installer
 
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass"
+& C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass
 
