@@ -92,15 +92,10 @@ Start-Process -Filepath "C:\temp\7zip\7z.exe" -ArgumentList "x C:\Kits\FintechOS
 
 
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
-Start-Sleep -s 10
+
 Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
-Start-Sleep -s 10
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -verb runAs -wait
 
-# Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
-$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$p_DbConnSqlAuthPass)
-Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
-
+# Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -verb runAs -wait
 
 # Install Designer 
 
@@ -110,12 +105,17 @@ Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList 
 
 & C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir F:\Sites\FintechOS\Portal -p_IisWebSite "default web site" -p_IisApp FTOS_Portal -p_IisAppPool FTOS_Portal -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir F:\UploadEBS
 
-# Repaeat FintechOS script installer
+# Repeat FintechOS script installer
 
-& C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
+# & C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
 
+# Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
+$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$p_DbConnSqlAuthPass)
+Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
 
+<#
 # Define job variables to run sqlcmd
+
 $jobname = "ResumeRestart"
 $script =  "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
 $trigger = New-JobTrigger -AtStartup
@@ -127,4 +127,5 @@ Register-ScheduledJob -Name $jobname -ScriptBlock $scriptblock -Trigger $trigger
 
 # Restart machine
 
-# Restart-Computer -Force
+# Restart-Computer -Force  #>
+
