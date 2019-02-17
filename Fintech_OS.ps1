@@ -110,7 +110,7 @@ Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentLis
 # & C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
 
 # Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
-$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$p_DbConnSqlAuthPass)
+$credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$p_DbConnSqlAuthPass)
 Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
 
 <#
