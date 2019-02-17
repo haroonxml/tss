@@ -27,6 +27,7 @@ New-Item -ItemType directory -Path F:\UploadEBS
 # Download and install SSMS
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "http://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe" -OutFile "C:\temp\SSMS-Setup-ENU.exe"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/valentindumitrescu/FintechOS/master/fintechossqlscripts.ps1" -OutFile "C:\temp\fintechossqlscripts.ps1"
 Start-Process -Filepath "C:\temp\SSMS-Setup-ENU.exe" -ArgumentList "/install /quiet /norestart" -wait
 
 
@@ -111,9 +112,20 @@ Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentLis
 
 # Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
 $pass = $p_DbConnSqlAuthPass|ConvertTo-SecureString -AsPlainText -Force
-$credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$pass)
+$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$pass)
+
+
 Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
-Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -Credential $credential -RedirectStandardOutput "c:\temp\output.txt"
+Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -Credential $credential -RedirectStandardOutput "c:\temp\output1.txt"
+
+# Try to execute a second script as another user
+$script =  "C:\temp\fintechossqlscripts.ps1 -p_DbConnServer $p_DbConnServer -p_DbConnDb $p_DbConnDb -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass"
+$scriptblock = [scriptblock]::Create($script)
+
+		# Invoke-Command -FilePath $command -Credential $credential -ComputerName $env:COMPUTERNAME
+Invoke-Command -scriptblock $scriptblock -Credential $credential -ComputerName localhost
+
+
 <#
 # Define job variables to run sqlcmd
 
