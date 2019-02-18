@@ -125,7 +125,12 @@ $scriptblock = [scriptblock]::Create($script)
 		# Invoke-Command -FilePath $command -Credential $credential -ComputerName $env:COMPUTERNAME
 Invoke-Command -scriptblock $scriptblock -Credential $credential -ComputerName localhost
 
-
+# create a bat file and run it as another user
+$BatFile = "C:\kits\applyscripts.Bat"
+$Code = "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s " + $p_DbConnServer + " -d " + $p_DbConnDb + " -u " + $p_DbConnSqlAuthUser + " -p " + $p_DbConnSqlAuthPass + " -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
+Set-Content -Path $BatFile -Value $code -Encoding ASCII
+& C:\Kits\psexec.exe -i -h -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -accepteula -w "c:\kits" C:\kits\applyscripts.Bat 
+& C:\Kits\psexec.exe -h -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -accepteula -w "c:\kits" C:\kits\applyscripts.Bat 
 <#
 # Define job variables to run sqlcmd
 
