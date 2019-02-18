@@ -58,7 +58,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
 # Download FintechOS files
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/7zip.zip" -OutFile "C:\temp\7zip.zip"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/psexec.zip" -OutFile "C:\kits\psexec.zip"
+Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/PsExec.zip" -OutFile "C:\kits\psexec.zip"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtilsx86.msi" -OutFile "C:\temp\MsSqlCmdLnUtilsx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsqlx86.msi" -OutFile "C:\temp\msodbcsqlx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtils.msi" -OutFile "C:\temp\MsSqlCmdLnUtils.msi"
