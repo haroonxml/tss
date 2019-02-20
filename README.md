@@ -40,8 +40,8 @@ Default UserName is: "FTOSadmin"
 Default password is "change_FTOSpassword".
 
 You can connect to the application by accessing the following urls:
-	http://<virtualmachinepublicname>/FTOS_portal for FintechOS Portal
-	http://<virtualmachinepublicname>/FTOS_designer for FintechOS Designer
+	http:/<virtualmachinepublicname>/FTOS_portal for FintechOS Portal
+	http:/<virtualmachinepublicname>/FTOS_designer for FintechOS Designer
 
 Virtual machine name is build using the information filled in the parameters page for "virtualmachine_name".
 Example if you filled in virtualmachine_name: "fintechossrv" and the resource group is in "West Europe", the virtualmachinepublicname	(fqdn) will be:fintechossrv.westeurope.cloudapp.azure.com
