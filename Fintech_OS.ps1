@@ -113,19 +113,19 @@ Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentLis
 # & C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
 
 # Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
-$pass = $p_DbConnSqlAuthPass|ConvertTo-SecureString -AsPlainText -Force
-$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$pass)
+	# $pass = $p_DbConnSqlAuthPass|ConvertTo-SecureString -AsPlainText -Force
+	# $Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$pass)
 
 
-Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
-Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -Credential $credential -RedirectStandardOutput "c:\temp\output1.txt"
+	# Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
+	# Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -Credential $credential -RedirectStandardOutput "c:\temp\output1.txt"
 
 # Try to execute a second script as another user
-$script =  "C:\temp\fintechossqlscripts.ps1 -p_DbConnServer $p_DbConnServer -p_DbConnDb $p_DbConnDb -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass"
-$scriptblock = [scriptblock]::Create($script)
+	# $script =  "C:\temp\fintechossqlscripts.ps1 -p_DbConnServer $p_DbConnServer -p_DbConnDb $p_DbConnDb -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass"
+	# $scriptblock = [scriptblock]::Create($script)
 
 		# Invoke-Command -FilePath $command -Credential $credential -ComputerName $env:COMPUTERNAME
-Invoke-Command -scriptblock $scriptblock -Credential $credential -ComputerName localhost
+	# Invoke-Command -scriptblock $scriptblock -Credential $credential -ComputerName localhost
 
 # create a bat file and run it as another user
 $BatFile = "C:\kits\applyscripts.Bat"
