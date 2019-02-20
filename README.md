@@ -40,6 +40,7 @@ Default UserName is: "FTOSadmin"
 Default password is "change_FTOSpassword".
 
 You can connect to the application by accessing the following urls:
+
 	http://'virtualmachinepublicname'/FTOS_portal for FintechOS Portal
 	http://'virtualmachinepublicname'/FTOS_designer for FintechOS Designer
 
