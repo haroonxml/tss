@@ -1,24 +1,33 @@
 
-# param(
-#    [string] $p_MainCommand
-#    , [Object] $p_InstallDir
-#    , [Object] $p_IisWebsite
-#    , [Object] $p_IisApp
-#    , [Object] $p_IisAppPool
-#    , [Object] $p_DbConnServer
-#    , [Object] $p_DbConnSqlAuthUser
-#    , [Object] $p_DbConnSqlAuthPass
-#    , [Object] $p_DbConnDb
-#    , [Object] $p_UploadEBSDir
-#)
+param(
+	[Object] $p_DbConnServer,
+	[Object] $p_DbConnSqlAuthUser,
+	[Object] $p_DbConnSqlAuthPass,
+	[Object] $p_DbConnDb
+)
+
+# Initialize secondary partition and assign drive letter
+
+Get-Disk |
+
+Where partitionstyle -eq 'raw' |
+
+Initialize-Disk -PartitionStyle MBR -PassThru |
+
+New-Partition -AssignDriveLetter -UseMaximumSize |
+
+Format-Volume -FileSystem NTFS -NewFileSystemLabel "data" -Confirm:$false
+
 
 # Create local folders
 New-Item -ItemType directory -Path C:\Kits\FintechOS
 New-Item -ItemType directory -Path C:\Temp
+New-Item -ItemType directory -Path F:\UploadEBS
 
 # Download and install SSMS
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "http://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe" -OutFile "C:\temp\SSMS-Setup-ENU.exe"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/valentindumitrescu/FintechOS/master/fintechossqlscripts.ps1" -OutFile "C:\temp\fintechossqlscripts.ps1"
 Start-Process -Filepath "C:\temp\SSMS-Setup-ENU.exe" -ArgumentList "/install /quiet /norestart" -wait
 
 
@@ -49,6 +58,7 @@ Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
 # Download FintechOS files
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/7zip.zip" -OutFile "C:\temp\7zip.zip"
+Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/PsExec.zip" -OutFile "C:\kits\psexec.zip"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtilsx86.msi" -OutFile "C:\temp\MsSqlCmdLnUtilsx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsqlx86.msi" -OutFile "C:\temp\msodbcsqlx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtils.msi" -OutFile "C:\temp\MsSqlCmdLnUtils.msi"
@@ -65,6 +75,7 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 
 # Unzip 7zip to local drive
 Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
+Expand-Archive "C:\kits\psexec.zip" -DestinationPath "C:\Kits\"
 
 
 # Unzip FintechOS
@@ -83,17 +94,58 @@ Start-Process -Filepath "C:\temp\7zip\7z.exe" -ArgumentList "x C:\Kits\FintechOS
 # Run FintechOS installer ( dbserver_name++suffix, databases_name, AdminUsername, AdminPassword)
 
 
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 45
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 45
-Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s fintechosdbsrv.database.windows.net -d fintechosdb -u FTOSadmin -p change_FTOSpassword" -wait
-Start-Sleep -s 600
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-i -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
+
+Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-w -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass" -wait
+
+# Start-Process -Filepath "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe" -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -verb runAs -wait
 
 # Install Designer 
 
-& C:\Kits\FTOS-CORE\DesignerWebApp\DesignerWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir C:\Site\FintechOS_SFTL\Designer -p_IisWebSite "default web site" -p_IisApp SFTL_Designer -p_IisAppPool SFTL_Designer -p_DbConnServer fintechosdbsrv.database.windows.net -p_DbConnSqlAuthUser FTOSadmin -p_DbConnSqlAuthPass change_FTOSpassword -p_DbConnDb fintechosdb -p_UploadEBSDir C:\UploadEBS
+& C:\Kits\FTOS-CORE\DesignerWebApp\DesignerWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir F:\Sites\FintechOS\Designer -p_IisWebSite "default web site" -p_IisApp FTOS_Designer -p_IisAppPool FTOS_Designer -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir F:\UploadEBS
 
 # Install Portal
 
-& C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir C:\Site\FintechOS_SFTL\Portal -p_IisWebSite "default web site" -p_IisApp SFTL_Portal -p_IisAppPool SFTL_Portal -p_DbConnServer fintechosdbsrv.database.windows.net -p_DbConnSqlAuthUser FTOSadmin -p_DbConnSqlAuthPass change_FTOSpassword -p_DbConnDb fintechosdb -p_UploadEBSDir C:\UploadEBS
+& C:\Kits\FTOS-CORE\PortalWebApp\PortalWebAppInstaller.ps1 -p_MainCommand Install -p_InstallDir F:\Sites\FintechOS\Portal -p_IisWebSite "default web site" -p_IisApp FTOS_Portal -p_IisAppPool FTOS_Portal -p_DbConnServer $p_DbConnServer -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass -p_DbConnDb $p_DbConnDb -p_UploadEBSDir F:\UploadEBS
+
+# Repeat FintechOS script installer
+
+# & C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c "C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE"
+
+# Run BasicDB upgrader and sqlcmd under p_DbConnSqlAuthUser and with LoadUserProfile
+$pass = $p_DbConnSqlAuthPass|ConvertTo-SecureString -AsPlainText -Force
+$Credential = New-Object System.Management.Automation.PsCredential($p_DbConnSqlAuthUser,$pass)
+
+
+Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -LoadUserProfile -Credential $credential
+Start-process -Filepath C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -ArgumentList "-g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`"" -Credential $credential -RedirectStandardOutput "c:\temp\output1.txt"
+
+# Try to execute a second script as another user
+$script =  "C:\temp\fintechossqlscripts.ps1 -p_DbConnServer $p_DbConnServer -p_DbConnDb $p_DbConnDb -p_DbConnSqlAuthUser $p_DbConnSqlAuthUser -p_DbConnSqlAuthPass $p_DbConnSqlAuthPass"
+$scriptblock = [scriptblock]::Create($script)
+
+		# Invoke-Command -FilePath $command -Credential $credential -ComputerName $env:COMPUTERNAME
+Invoke-Command -scriptblock $scriptblock -Credential $credential -ComputerName localhost
+
+# create a bat file and run it as another user
+$BatFile = "C:\kits\applyscripts.Bat"
+$Code = "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s " + $p_DbConnServer + " -d " + $p_DbConnDb + " -u " + $p_DbConnSqlAuthUser + " -p " + $p_DbConnSqlAuthPass + " -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
+Set-Content -Path $BatFile -Value $code -Encoding ASCII
+& C:\Kits\psexec.exe -i -h -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -accepteula -w "c:\kits" C:\kits\applyscripts.Bat 
+& C:\Kits\psexec.exe -h -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -accepteula -w "c:\kits" C:\kits\applyscripts.Bat 
+<#
+# Define job variables to run sqlcmd
+
+$jobname = "ResumeRestart"
+$script =  "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s $p_DbConnServer -d $p_DbConnDb -u $p_DbConnSqlAuthUser -p $p_DbConnSqlAuthPass -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
+$trigger = New-JobTrigger -AtStartup
+ 
+# The script below will run elevated to use the highest privileges.
+$scriptblock = [scriptblock]::Create($script)
+$options = New-ScheduledJobOption -RunElevated -ContinueIfGoingOnBattery -StartIfOnBattery
+Register-ScheduledJob -Name $jobname -ScriptBlock $scriptblock -Trigger $trigger -ScheduledJobOption $options
+
+# Restart machine
+
+# Restart-Computer -Force  #>
+
