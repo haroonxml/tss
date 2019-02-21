@@ -3,6 +3,10 @@ FintechOSAzureTemplate
 
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
+<a href="https://azuredeploy.net/" target="_blank">
+    <img src="https://azuredeploy.net/deploybutton.svg"/>
+</a>
+
 
 This template deploys FintechOS
 
