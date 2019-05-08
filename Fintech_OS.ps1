@@ -63,24 +63,13 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsqlx86.msi" -OutFile "C:\temp\msodbcsqlx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtils.msi" -OutFile "C:\temp\MsSqlCmdLnUtils.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsql.msi" -OutFile "C:\temp\msodbcsql.msi"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.001" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.001"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.002" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.002"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.003" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.003"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.004" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.004"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.005" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.005"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.006" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.006"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.007" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.007"
-Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/FTOS-CORE.7z.008" -OutFile "C:\Kits\FintechOS\FTOS-CORE.7z.008"
-
+Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/FTOS-CORE-RLS-v18.1.9.0-b368-GOLD.zip" -OutFile "C:\Kits\FintechOS\FTOS-CORE.zip"
 
 # Unzip 7zip to local drive
 Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
 Expand-Archive "C:\kits\psexec.zip" -DestinationPath "C:\Kits\"
+Expand-Archive "C:\Kits\FintechOS\FTOS-CORE.zip" -DestinationPath "C:\Kits\"
 
-
-# Unzip FintechOS
-
-Start-Process -Filepath "C:\temp\7zip\7z.exe" -ArgumentList "x C:\Kits\FintechOS\FTOS-CORE.7z.001 -o`"C:\Kits`"" -wait
 
 
 #Install SQLcmd
