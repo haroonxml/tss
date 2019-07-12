@@ -71,7 +71,20 @@
 	
 	},
     "resources": [
-        {
+	    { 
+		"apiVersion": "2018-02-01",
+		"name": "pid-78047b46-3b84-5b50-ad2d-5a9d71857ffa",
+		"type": "Microsoft.Resources/deployments",
+		"properties": {
+		"mode": "Incremental",
+		"template": {
+		    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+		    "contentVersion": "1.0.0.0",
+		    "resources": []
+			}
+		     }
+		},
+	    {
             "comments": "Provision template for virtual machine.",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('virtualMachine_name')]",
