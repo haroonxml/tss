@@ -1,4 +1,3 @@
-
 param(
 	[Object] $p_DbConnServer,
 	[Object] $p_DbConnSqlAuthUser,
@@ -18,7 +17,7 @@ New-Partition -AssignDriveLetter -UseMaximumSize |
 
 Format-Volume -FileSystem NTFS -NewFileSystemLabel "data" -Confirm:$false
 
-# Set Bucharest TimeZone
+# Set TimeZone
 
 Set-TimeZone -Name "GTB Standard Time"
 
@@ -34,7 +33,6 @@ Add-MpPreference -ExclusionPath "F:\Services"
 # Download and install SSMS
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "http://download.microsoft.com/download/3/C/7/3C77BAD3-4E0F-4C6B-84DD-42796815AFF6/SSMS-Setup-ENU.exe" -OutFile "C:\temp\SSMS-Setup-ENU.exe"
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/valentindumitrescu/FintechOS/master/fintechossqlscripts.ps1" -OutFile "C:\temp\fintechossqlscripts.ps1"
 Start-Process -Filepath "C:\temp\SSMS-Setup-ENU.exe" -ArgumentList "/install /quiet /norestart" -wait
 
 
@@ -79,29 +77,40 @@ Expand-Archive "C:\kits\JobServices18.1.zip" -DestinationPath "F:\Services\"
 & C:\kits\npp.7.5.9.Installer.x64.exe /S
 & C:\kits\chromesetup.exe /silent /install
 
-# generate test file with user/password in clear text
-$BatFile = "C:\kits\applyscripts.Bat"
-$Code = "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s " + $p_DbConnServer + " -d " + $p_DbConnDb + " -u " + $p_DbConnSqlAuthUser + " -p " + $p_DbConnSqlAuthPass + " -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
-Set-Content -Path $BatFile -Value $code -Encoding ASCII
+
+# download job server files
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/fintechosnn/JobServices18.1.zip" -OutFile "C:\kits\JobServices18.1.zip"
+
+Expand-Archive "C:\kits\JobServices18.1.zip" -DestinationPath "F:\Services\"
 
 
-
-# add letsencrypt SSL certificate and create binding for https
-
-$notificationemail = 'valentin.dumitrescu@fintechos.com'
-
-Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName "HostHeader" -Value $p_fqdn
-
-& c:\Kits\letsencrypt\wacs.exe --target iissite --siteid 1 --emailaddress $notificationemail --accepttos --usedefaulttaskuser
-
-New-WebBinding -name 'Default Web Site' -Protocol https  -HostHeader $p_fqdn -Port 443 -SslFlags 1
+# configure Job Services
 
 
-##################### not final #################################
-$cert = dir cert: -Recurse | Where-Object {$_.FriendlyName -like "*IIS*"}
+((Get-Content -path 'F:\Services\JobServer\services.config' -Raw) -replace 'SqlServerName',$p_DbConnServer) | Set-Content -Path 'F:\Services\JobServer\services.config'
+((Get-Content -path 'F:\Services\JobServer\services.config' -Raw) -replace 'DataBaseName',$p_DbConnDb) | Set-Content -Path 'F:\Services\JobServer\services.config'
+((Get-Content -path 'F:\Services\JobServer\services.config' -Raw) -replace 'userName',$p_DbConnSqlAuthUser) | Set-Content -Path 'F:\Services\JobServer\services.config'
+((Get-Content -path 'F:\Services\JobServer\services.config' -Raw) -replace 'userPassword',$p_DbConnSqlAuthPass) | Set-Content -Path 'F:\Services\JobServer\services.config'
+
+((Get-Content -path 'F:\Services\JobServer\connections.config' -Raw) -replace 'Data Source=.',('Data Source=' + $p_DbConnServer)) | Set-Content -Path 'F:\Services\JobServer\connections.config'
+((Get-Content -path 'F:\Services\JobServer\connections.config' -Raw) -replace 'ftosdb',$p_DbConnDb) | Set-Content -Path 'F:\Services\JobServer\connections.config'
+((Get-Content -path 'F:\Services\JobServer\connections.config' -Raw) -replace 'ID=sa',('ID=' + $p_DbConnSqlAuthUser)) | Set-Content -Path 'F:\Services\JobServer\connections.config'
+((Get-Content -path 'F:\Services\JobServer\connections.config' -Raw) -replace 'SA6122019sa',$p_DbConnSqlAuthPass) | Set-Content -Path 'F:\Services\JobServer\connections.config'
+
+((Get-Content -path 'F:\Services\JobServer - OCB\connections.config' -Raw) -replace 'Data Source=.',('Data Source=' + $p_DbConnServer)) | Set-Content -Path 'F:\Services\JobServer - OCB\connections.config'
+((Get-Content -path 'F:\Services\JobServer - OCB\connections.config' -Raw) -replace 'ftosdb',$p_DbConnDb) | Set-Content -Path 'F:\Services\JobServer - OCB\connections.config'
+((Get-Content -path 'F:\Services\JobServer - OCB\connections.config' -Raw) -replace 'userName',$p_DbConnSqlAuthUser) | Set-Content -Path 'F:\Services\JobServer - OCB\connections.config'
+((Get-Content -path 'F:\Services\JobServer - OCB\connections.config' -Raw) -replace 'userPassword',$p_DbConnSqlAuthPass) | Set-Content -Path 'F:\Services\JobServer - OCB\connections.config'
 
 
-# get-item cert:$cert.thumbprint | new-item -path IIS:\SslBindings\0.0.0.0!443!$p_fqdn
+((Get-Content -path 'F:\Services\MessageBus (OCB)\connections.config' -Raw) -replace 'Data Source=.',('Data Source=' + $p_DbConnServer)) | Set-Content -Path 'F:\Services\MessageBus (OCB)\connections.config'
+((Get-Content -path 'F:\Services\MessageBus (OCB)\connections.config' -Raw) -replace 'ftosdb',$p_DbConnDb) | Set-Content -Path 'F:\Services\MessageBus (OCB)\connections.config'
+((Get-Content -path 'F:\Services\MessageBus (OCB)\connections.config' -Raw) -replace 'userName',$p_DbConnSqlAuthUser) | Set-Content -Path 'F:\Services\MessageBus (OCB)\connections.config'
+((Get-Content -path 'F:\Services\MessageBus (OCB)\connections.config' -Raw) -replace 'userPassword',$p_DbConnSqlAuthPass) | Set-Content -Path 'F:\Services\MessageBus (OCB)\connections.config'
 
-(Get-WebBinding -Name 'Default Web Site' -Port 443 -Protocol https -HostHeader $p_fqdn).AddSslCertificate($cert.Thumbprint, "WebHosting")
+# Add Windows Services
+
+& "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe"  /ServiceName="FTOS.JobServer" /i "F:\Services\JobServer\FTOS.JobServer.Service.exe"
+& "C:\Windows\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe"  /ServiceName="FTOS.JobServer.OCB" /i "F:\Services\JobServer - OCB\FTOS.JobServer.Service.exe"
 
