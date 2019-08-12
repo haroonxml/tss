@@ -25,12 +25,11 @@ Set-TimeZone -Name "GTB Standard Time"
 # Create local folders
 New-Item -ItemType directory -Path C:\Kits\FintechOS
 New-Item -ItemType directory -Path C:\Temp
-New-Item -ItemType directory -Path F:\UploadEBS
+New-Item -ItemType directory -Path F:\Services
 
 # Add Windows Defender exclusions
 
-Add-MpPreference -ExclusionPath "F:\Sites"
-Add-MpPreference -ExclusionPath "F:\UploadEBS"
+Add-MpPreference -ExclusionPath "F:\Services"
 
 # Download and install SSMS
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -61,28 +60,30 @@ Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
 
 
 
-# Download FintechOS files
+# Download apps files
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/7zip.zip" -OutFile "C:\temp\7zip.zip"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/PsExec.zip" -OutFile "C:\kits\psexec.zip"
 Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/letsencrypt.zip" -OutFile "C:\kits\letsencrypt.zip"
 Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/npp.7.5.9.Installer.x64.exe" -OutFile "C:\kits\npp.7.5.9.Installer.x64.exe"
 Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/ChromeSetup.exe" -OutFile "C:\kits\ChromeSetup.exe"
-
+Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/fintechosnn/JobServices18.1.zip" -OutFile "C:\kits\JobServices18.1.zip"
 
 # Unzip 7zip to local drive
 Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
 Expand-Archive "C:\kits\psexec.zip" -DestinationPath "C:\Kits\"
 Expand-Archive "C:\kits\letsencrypt.zip" -DestinationPath "C:\Kits\"
+Expand-Archive "C:\kits\JobServices18.1.zip" -DestinationPath "F:\Services\"
 
 # Unzip FintechOS
 & C:\kits\npp.7.5.9.Installer.x64.exe /S
 & C:\kits\chromesetup.exe /silent /install
 
-
+# generate test file with user/password in clear text
 $BatFile = "C:\kits\applyscripts.Bat"
 $Code = "C:\Kits\FTOS-CORE\SQL\BasicDbUpgrader.exe -g -s " + $p_DbConnServer + " -d " + $p_DbConnDb + " -u " + $p_DbConnSqlAuthUser + " -p " + $p_DbConnSqlAuthPass + " -c `"C:\Program Files (x86)\Microsoft SQL Server\Client SDK\ODBC\130\Tools\Binn\SQLCMD.EXE`""
 Set-Content -Path $BatFile -Value $code -Encoding ASCII
+
 
 
 # add letsencrypt SSL certificate and create binding for https
