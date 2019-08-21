@@ -77,7 +77,7 @@ Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsqlx86.msi" -OutFile "C:\temp\msodbcsqlx86.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/MsSqlCmdLnUtils.msi" -OutFile "C:\temp\MsSqlCmdLnUtils.msi"
 Invoke-WebRequest -Uri "https://github.com/valentindumitrescu/FintechOS/raw/ftos_core/msodbcsql.msi" -OutFile "C:\temp\msodbcsql.msi"
-Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/FTOS-CORE-RLS-v18.2.2.0-b114-GOLD.zip" -OutFile "C:\Kits\FintechOS\FTOS-CORE.zip"
+Invoke-WebRequest -Uri "https://ftosautodeploystorage.blob.core.windows.net/kits/FTOS-CORE-RLS-v18.2.5.0-b131-GOLD.zip" -OutFile "C:\Kits\FintechOS\FTOS-CORE.zip"
 
 # Unzip 7zip to local drive
 Expand-Archive "C:\temp\7zip.zip" -DestinationPath "C:\Temp\"
