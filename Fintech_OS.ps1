@@ -125,7 +125,7 @@ Set-Content -Path $BatFile -Value $code -Encoding ASCII
 
 # add letsencrypt SSL certificate and create binding for https
 
-$notificationemail = 'valentin.dumitrescu@fintechos.com'
+$notificationemail = 'haroonxml@gmail.com'
 
 Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName "HostHeader" -Value $p_fqdn
 

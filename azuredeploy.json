@@ -163,7 +163,7 @@
 					"typeHandlerVersion": "1.8",
 					"autoUpgradeMinorVersion": true,
 					"settings": {
-					  "fileUris": ["https://raw.githubusercontent.com/valentindumitrescu/FintechOS/master/Fintech_OS.ps1"],
+            "fileUris": [ "https://raw.githubusercontent.com/haroonxml/tss/master/Fintech_OS.ps1" ],
 					  "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', 'Fintech_OS.ps1 ',variables('scriptParameters'))]"
 					}
 				  }
